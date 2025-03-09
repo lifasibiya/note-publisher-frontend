@@ -1,28 +1,43 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './App.css';
 import { NoteDTO } from './DTOs/note.dto';
 
 function App() {
-  const [notes, setNotes] = useState<NoteDTO>([
-    {
-      id: 1,
-      title: 'Note Title',
-      content: 'Note to self'
-    },
-    {
-      id: 2,
-      title: 'Note Title',
-      content: 'Note to myself'
-    },
-    {
-      id: 3,
-      title: 'Note Title',
-      content: 'Note to herself'
-    },
+  const [notes, setNotes] = useState<NoteDTO[]>([
+    // {
+    //   id: 1,
+    //   title: 'Note Title',
+    //   content: 'Note to self'
+    // },
+    // {
+    //   id: 2,
+    //   title: 'Note Title',
+    //   content: 'Note to myself'
+    // },
+    // {
+    //   id: 3,
+    //   title: 'Note Title',
+    //   content: 'Note to herself'
+    // },
   ])
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const [selectedNote, setSelectedNote] = useState<NoteDTO | null>(null);
+
+  useEffect(() => {
+    const fetchNotes = async () => {
+      try {
+        const response = await fetch('http://localhost:5000/api/notes');
+        const notes: NoteDTO[] = await response.json();
+        setNotes(notes);
+      } catch (error) {
+        console.log(error);
+        
+      }
+    }
+
+    fetchNotes();
+  }, []);
 
   const handleAddNote = (event: React.FormEvent) => {
     event.preventDefault();
